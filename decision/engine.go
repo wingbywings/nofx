@@ -6,6 +6,7 @@ import (
 	"log"
 	"nofx/market"
 	"nofx/mcp"
+	"nofx/news_info"
 	"nofx/pool"
 	"strings"
 	"time"
@@ -251,10 +252,12 @@ func buildSystemPrompt(accountEquity float64, btcEthLeverage, altcoinLeverage in
 	sb.WriteString("- 📊 **原始序列**：3分钟价格序列(MidPrices数组) + 4小时K线序列\n")
 	sb.WriteString("- 📈 **技术序列**：EMA20序列、MACD序列、RSI7序列、RSI14序列\n")
 	sb.WriteString("- 💰 **资金序列**：成交量序列、持仓量(OI)序列、资金费率\n")
+	sb.WriteString("- 📰 **快讯序列**：虚拟货币、美股、全球财经实时快讯消息\n")
 	sb.WriteString("- 🎯 **筛选标记**：AI500评分 / OI_Top排名（如果有标注）\n\n")
 	sb.WriteString("**分析方法**（完全由你自主决定）：\n")
 	sb.WriteString("- 自由运用序列数据，你可以做但不限于趋势分析、形态识别、支撑阻力、技术阻力位、斐波那契、波动带计算\n")
 	sb.WriteString("- 多维度交叉验证（价格+量+OI+指标+序列形态）\n")
+	sb.WriteString("- 分析消息面对相关币种价格的影响（次要）\n")
 	sb.WriteString("- 用你认为最有效的方法发现高确定性机会\n")
 	sb.WriteString("- 综合信心度 ≥ 75 才开仓\n\n")
 	sb.WriteString("**避免低质量信号**：\n")
@@ -408,6 +411,17 @@ func buildUserPrompt(ctx *Context) string {
 				sb.WriteString(fmt.Sprintf("## 📊 夏普比率: %.2f\n\n", perfData.SharpeRatio))
 			}
 		}
+	}
+
+	// === 快讯 ===
+	newsList, err := news_info.GetNewsJinse(10)
+	if err == nil && len(newsList) > 0 {
+		sb.WriteString("## 📰 最新快讯\n")
+		for _, news := range newsList {
+			sb.WriteString(fmt.Sprintf("- [%s] %s\n", news.Time, news.Content))
+			log.Printf("## 📰 快讯: %s\n", news.ContentPrefix)
+		}
+		sb.WriteString("\n")
 	}
 
 	sb.WriteString("---\n\n")
