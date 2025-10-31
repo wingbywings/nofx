@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 type LiveRecord struct {
@@ -13,6 +14,7 @@ type LiveRecord struct {
 	ContentPrefix string      `json:"content_prefix"`
 	Link          string      `json:"link"`
 	CreatedAtZh   string      `json:"created_at_zh"`
+	CreatedAt     int64       `json:"created_at"`
 }
 
 type LivesList struct {
@@ -57,12 +59,13 @@ func GetNewsJinse(limit int) ([]CryptoNews, error) {
 		return nil, err
 	}
 
-	// fmt.Println(string(body)) // 类似Python中的print
+	// fmt.Println(string(body))
 
 	var result JinseResponse
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
+	// fmt.Println(result)
 
 	cryptoNews := []CryptoNews{}
 	i := 0
@@ -79,7 +82,12 @@ func GetNewsJinse(limit int) ([]CryptoNews, error) {
 				ContentPrefix: record.ContentPrefix,
 				Link:          record.Link,
 				Poster:        "金色财经",
-				Time:          record.CreatedAtZh,
+				Time:          time.Unix(record.CreatedAt, 0).Format("2006-01-02 15:04:05"),
+			}
+			// fmt.Println("12", string(record.CreatedAt))
+			createdAtTime := time.Unix(record.CreatedAt, 0)
+			if time.Since(createdAtTime) > 30*time.Minute {
+				continue
 			}
 			cryptoNews = append(cryptoNews, news)
 			i++

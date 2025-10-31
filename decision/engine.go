@@ -419,7 +419,7 @@ func buildUserPrompt(ctx *Context) string {
 		sb.WriteString("## 📰 最新快讯\n")
 		for _, news := range newsList {
 			sb.WriteString(fmt.Sprintf("- [%s] %s\n", news.Time, news.Content))
-			log.Printf("## 📰 快讯: %s\n", news.ContentPrefix)
+			log.Printf("## 📰 快讯: %s（%s）\n", news.ContentPrefix, news.Time)
 		}
 		sb.WriteString("\n")
 	}
