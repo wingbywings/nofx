@@ -177,7 +177,7 @@ export default function DecisionLogsViewer({ traderId }: DecisionLogsViewerProps
       {!isLoading && paginatedDecisions.length > 0 ? (
         <>
           <div className="space-y-4 mb-6">
-            {paginatedDecisions.map((decision, index) => (
+            {paginatedDecisions.map((decision) => (
               <DecisionLogCard key={decision.cycle_number} decision={decision} language={language} />
             ))}
           </div>
@@ -317,11 +317,10 @@ function DecisionLogCard({
                 📥 {t('inputPrompt', language)}
               </div>
               <div
-                className="rounded p-3 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"
-                style={{ background: '#0B0E11', border: '1px solid #2B3139', color: '#EAECEF' }}
+                className="rounded p-3 text-xs font-mono whitespace-pre-wrap overflow-y-auto"
+                style={{ background: '#0B0E11', border: '1px solid #2B3139', color: '#EAECEF', maxHeight: '400px' }}
               >
-                {decision.input_prompt.substring(0, 500)}
-                {decision.input_prompt.length > 500 && '...'}
+                {decision.input_prompt}
               </div>
             </div>
           )}
@@ -333,11 +332,10 @@ function DecisionLogCard({
                 📤 {t('aiThinking', language)}
               </div>
               <div
-                className="rounded p-3 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto"
-                style={{ background: '#0B0E11', border: '1px solid #2B3139', color: '#EAECEF' }}
+                className="rounded p-3 text-xs font-mono whitespace-pre-wrap overflow-y-auto"
+                style={{ background: '#0B0E11', border: '1px solid #2B3139', color: '#EAECEF', maxHeight: '400px' }}
               >
-                {decision.cot_trace.substring(0, 500)}
-                {decision.cot_trace.length > 500 && '...'}
+                {decision.cot_trace}
               </div>
             </div>
           )}
