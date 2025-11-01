@@ -38,7 +38,7 @@ func NewFuturesTrader(apiKey, secretKey string) *FuturesTrader {
 	}
 }
 
-// GetBalance 获取账户余额（带缓存）
+// GetBalance 获取账户余额（带缓存和重试机制）
 func (t *FuturesTrader) GetBalance() (map[string]interface{}, error) {
 	// 先检查缓存是否有效
 	t.balanceCacheMutex.RLock()
@@ -50,12 +50,37 @@ func (t *FuturesTrader) GetBalance() (map[string]interface{}, error) {
 	}
 	t.balanceCacheMutex.RUnlock()
 
-	// 缓存过期或不存在，调用API
+	// 缓存过期或不存在，调用API（带重试机制）
 	log.Printf("🔄 缓存过期，正在调用币安API获取账户余额...")
-	account, err := t.client.NewGetAccountService().Do(context.Background())
+
+	const maxRetries = 3
+	const initialDelay = 1 * time.Second
+
+	var account *futures.Account
+	var err error
+
+	for attempt := 1; attempt <= maxRetries; attempt++ {
+		account, err = t.client.NewGetAccountService().Do(context.Background())
+		if err == nil {
+			// 成功获取，跳出重试循环
+			break
+		}
+
+		// 记录错误日志
+		log.Printf("❌ 币安API调用失败 (尝试 %d/%d): %v", attempt, maxRetries, err)
+
+		// 如果不是最后一次尝试，等待后重试
+		if attempt < maxRetries {
+			delay := initialDelay * time.Duration(attempt) // 指数退避: 1s, 2s, 3s
+			log.Printf("⏳ 等待 %.0f 秒后重试...", delay.Seconds())
+			time.Sleep(delay)
+		}
+	}
+
+	// 所有重试都失败
 	if err != nil {
-		log.Printf("❌ 币安API调用失败: %v", err)
-		return nil, fmt.Errorf("获取账户信息失败: %w", err)
+		log.Printf("❌ 币安API调用失败（已重试 %d 次）: %v", maxRetries, err)
+		return nil, fmt.Errorf("获取账户信息失败（已重试%d次）: %w", maxRetries, err)
 	}
 
 	result := make(map[string]interface{})
@@ -77,7 +102,7 @@ func (t *FuturesTrader) GetBalance() (map[string]interface{}, error) {
 	return result, nil
 }
 
-// GetPositions 获取所有持仓（带缓存）
+// GetPositions 获取所有持仓（带缓存和重试机制）
 func (t *FuturesTrader) GetPositions() ([]map[string]interface{}, error) {
 	// 先检查缓存是否有效
 	t.positionsCacheMutex.RLock()
@@ -89,11 +114,37 @@ func (t *FuturesTrader) GetPositions() ([]map[string]interface{}, error) {
 	}
 	t.positionsCacheMutex.RUnlock()
 
-	// 缓存过期或不存在，调用API
+	// 缓存过期或不存在，调用API（带重试机制）
 	log.Printf("🔄 缓存过期，正在调用币安API获取持仓信息...")
-	positions, err := t.client.NewGetPositionRiskService().Do(context.Background())
+
+	const maxRetries = 3
+	const initialDelay = 1 * time.Second
+
+	var positions []*futures.PositionRisk
+	var err error
+
+	for attempt := 1; attempt <= maxRetries; attempt++ {
+		positions, err = t.client.NewGetPositionRiskService().Do(context.Background())
+		if err == nil {
+			// 成功获取，跳出重试循环
+			break
+		}
+
+		// 记录错误日志
+		log.Printf("❌ 币安API调用失败 (尝试 %d/%d): %v", attempt, maxRetries, err)
+
+		// 如果不是最后一次尝试，等待后重试
+		if attempt < maxRetries {
+			delay := initialDelay * time.Duration(attempt) // 指数退避: 1s, 2s, 3s
+			log.Printf("⏳ 等待 %.0f 秒后重试...", delay.Seconds())
+			time.Sleep(delay)
+		}
+	}
+
+	// 所有重试都失败
 	if err != nil {
-		return nil, fmt.Errorf("获取持仓失败: %w", err)
+		log.Printf("❌ 币安API调用失败（已重试 %d 次）: %v", maxRetries, err)
+		return nil, fmt.Errorf("获取持仓失败（已重试%d次）: %w", maxRetries, err)
 	}
 
 	var result []map[string]interface{}
