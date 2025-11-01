@@ -257,7 +257,7 @@ func buildSystemPrompt(accountEquity float64, btcEthLeverage, altcoinLeverage in
 	sb.WriteString("**分析方法**（完全由你自主决定）：\n")
 	sb.WriteString("- 自由运用序列数据，你可以做但不限于趋势分析、形态识别、支撑阻力、技术阻力位、斐波那契、波动带计算\n")
 	sb.WriteString("- 多维度交叉验证（价格+量+OI+指标+序列形态）\n")
-	sb.WriteString("- 分析消息面对相关币种价格的影响（次要）\n")
+	sb.WriteString("- 通过快讯分析消息面对相关币种价格的辅助影响（注意：快讯消息并不一定准确，需要结合其他因素综合判断。忽略当前币种的突破或跌破的相关消息，如：消息显示比特币突破或跌破100000美元，则忽略）\n")
 	sb.WriteString("- 用你认为最有效的方法发现高确定性机会\n")
 	sb.WriteString("- 综合信心度 ≥ 75 才开仓\n\n")
 	sb.WriteString("**避免低质量信号**：\n")

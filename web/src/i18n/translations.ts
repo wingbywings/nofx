@@ -118,6 +118,21 @@ export const translations = {
     loading: 'Loading...',
     loadingError: '⚠️ Failed to load AI learning data',
     noCompleteData: 'No complete trading data (needs to complete open → close cycle)',
+
+    // Decision Logs Viewer
+    allDecisionLogs: 'All Decision Logs',
+    totalDecisions: 'Total {count} decisions',
+    filtered: '{count} filtered',
+    searchDecisions: 'Search decisions (cycle, symbol, content...)',
+    all: 'All',
+    showing: 'Showing {start}-{end} of {total}',
+    previous: 'Previous',
+    next: 'Next',
+    noDecisionsFound: 'No Decisions Found',
+    tryDifferentFilters: 'Try different search terms or filters',
+    actions: 'Actions',
+    accountState: 'Account State',
+    executionLog: 'Execution Log',
   },
   zh: {
     // Header
@@ -236,6 +251,21 @@ export const translations = {
     loading: '加载中...',
     loadingError: '⚠️ 加载AI学习数据失败',
     noCompleteData: '暂无完整交易数据（需要完成开仓→平仓的完整周期）',
+
+    // Decision Logs Viewer
+    allDecisionLogs: '所有决策日志',
+    totalDecisions: '共 {count} 条决策',
+    filtered: '筛选出 {count} 条',
+    searchDecisions: '搜索决策（周期、币种、内容...）',
+    all: '全部',
+    showing: '显示第 {start}-{end} 条，共 {total} 条',
+    previous: '上一页',
+    next: '下一页',
+    noDecisionsFound: '未找到决策',
+    tryDifferentFilters: '尝试使用其他搜索词或筛选条件',
+    actions: '操作',
+    accountState: '账户状态',
+    executionLog: '执行日志',
   }
 };
 

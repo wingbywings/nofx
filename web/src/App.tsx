@@ -4,6 +4,7 @@ import { api } from './lib/api';
 import { EquityChart } from './components/EquityChart';
 import { CompetitionPage } from './components/CompetitionPage';
 import AILearning from './components/AILearning';
+import DecisionLogsViewer from './components/DecisionLogsViewer';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { t, type Language } from './i18n/translations';
 import type {
@@ -555,6 +556,11 @@ function TraderDetailsPage({
       {/* AI Learning & Performance Analysis */}
       <div className="mb-6 animate-slide-in" style={{ animationDelay: '0.3s' }}>
         <AILearning traderId={selectedTrader.trader_id} />
+      </div>
+
+      {/* Decision Logs Viewer */}
+      <div className="mb-6 animate-slide-in" style={{ animationDelay: '0.4s' }}>
+        <DecisionLogsViewer traderId={selectedTrader.trader_id} />
       </div>
     </div>
   );
